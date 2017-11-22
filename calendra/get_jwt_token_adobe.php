@@ -1,15 +1,10 @@
-<?php require "connect.php" ?>
-
-
-
-
 <?php
 
  
 $fp = fsockopen("acs106.msavlab.adobe.com", 80, $errno, $errstr, 1);
  
 if($fp) {
-    echo("<BR>ACS Connexion ok");
+    echo("<BR><BR>ACS Connexion ok");
     
     
     
@@ -26,8 +21,6 @@ $Tham = $_SESSION['ThAM'];
 $Thpm = $_SESSION['ThPM'];
 $Fram = $_SESSION['FrAM'];
 $Frpm = $_SESSION['FrPM'];
-
-
 
 
 $data = '{"cusMoAM":"'.$Moam.'","cusMoPM":"'.$Mopm.'","cusTuAM":"'.$Tuam.'","cusTuPM":"'.$Tupm.'","cusWeAM":"'.$Weam.'","cusWePM":"'.$Wepm.'","cusThAM":"'.$Tham.'","cusThPM":"'.$Thpm.'","cusFrAM":"'.$Fram.'","cusFrPM":"'.$Frpm.'"}';

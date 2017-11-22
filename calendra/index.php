@@ -1,3 +1,9 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+
+
 <?php
 
 ?>
@@ -10,9 +16,11 @@ require "connect.php"
 ?>
 <?php require "get_list.php" ?>
 
-<!DOCTYPE html><html><head><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
+
+<head><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
 <meta name="viewport" content="initial-scale=1">
-  
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -91,13 +99,33 @@ a { color: #990000; text-decoration: none; }
 
 .read-more:hover { background: #990000; text-decoration: none; }
 
+.foot {
+    position: fixed;
+    bottom: 50;
+    width: 100%;
+    text-align: center;
+    
+}
+
 </style>
 
 <title>Calendra Adobe</title>
 
 
 <script>
-var datalayer = { "pageName":"MSA:calendar:edit"};
+
+var datalayer = 
+{ "pageName":"Calendra:edit",
+"user":localStorage["nom"]||"Inconnu",
+"group":localStorage["group"]||"None",
+"statusAC":"",
+"action":"",
+"changeday":"",
+"partday":""
+};
+
+
+
 if(!localStorage["nom"]){ localStorage["nom"] = "Jean-Marie";}
 if(!localStorage["nomIndex"]){ localStorage["nomIndex"] = "0";}
 
@@ -121,7 +149,8 @@ $.ajax( { type : 'POST',
 
 
 function ChangeDD(value_person,value_name) {
-_satellite.track("Save");
+datalayer.action = "Change User";
+_satellite.track("action");
 
 
 vv = value_person;
@@ -151,13 +180,16 @@ function Save() {
 
 
 
+
 </script>
 <script src="https://assets.adobedtm.com/ed015bf1f294ad47b32bded889ba32e62ca6c25a/satelliteLib-624f054d82f9aea1b470f130cecba9dd1d037b23.js"></script>
   
 </head>
 
 <body ng-app="myApp" class="ng-scope">
-
+  <div id="head1"  >
+    .
+  </div>
 <form style="display: hidden" action="http://benjaminachiary.com/calendra/index.php" method="POST" id="form">
   <input type="hidden" id="var1" name="var1" value=""/>
   <input type="hidden" id="var2" name="var2" value=""/>
@@ -170,7 +202,7 @@ function Save() {
   <div class="row">
     <div class="col-md-12">
       
-<label>Nom:</label>
+<label>Consultant	:</label>
 <select name="person" ng-options="person.name as person.name for person in persons" ng-model="person_name" onChange="ChangeDD(this.value,options[this.value].text)">
 
 
@@ -198,7 +230,7 @@ function Save() {
             </td>
             <td class="table-hover" ng-repeat="d in week" ng-click="addHere(d.hours[$parent.$index],d.day)">
 		<i>{{d.team[$parent.$index].value}}</i>
-       <h4 font-color=blue>{{ d.hours[$parent.$index].value }}</h4>
+       <h4 font-color=blue>{{ d.hours[$parent.$index].value  }}</h4> 
 
             </td>
           </tr>
@@ -215,6 +247,16 @@ function Save() {
 
 <div ui-calendar="uiConfig.calendar" class="span8 calendar ng-pristine ng-valid" ng-model="eventSources"></div>
 
+  <div class="foot" >
+    
+  </div>
+  
+  
+  <div id="foot2"  >
+    .
+  </div>
+
+
   
 
 
@@ -222,13 +264,7 @@ function Save() {
 
 <script type="text/javascript">//<![CDATA[
 
-if(localStorage["nom"]!=localStorage["firstname"]){
 
-$("#var1").val(localStorage["nomIndex"]);
-console.log(localStorage["nomIndex"]);
-$("#form").submit();
-
-}
 
 var myApp = angular.module('myApp', []);
 
@@ -250,20 +286,22 @@ $scope.team = JSON.parse(localStorage["team"])
 $scope.week = JSON.parse(localStorage["week"]);
 var t1 = $scope.team[0][0].value.replace(localStorage["nom"],"");
 
-$scope.team[0][0].value = $scope.team[0][0].value.replace(localStorage["nom"],"");
-$scope.team[0][1].value = $scope.team[0][1].value.replace(localStorage["nom"],"");
 
-$scope.team[1][0].value = $scope.team[1][0].value.replace(localStorage["nom"],"");
-$scope.team[1][1].value = $scope.team[1][1].value.replace(localStorage["nom"],"");
+$scope.team[0][0].value = $scope.team[0][0].value.replace(localStorage["nom"],"") + "(" + $scope.team[0][0].value.trim().split(/\s+/).length + ")";
 
-$scope.team[2][0].value = $scope.team[2][0].value.replace(localStorage["nom"],"");
-$scope.team[2][1].value = $scope.team[2][1].value.replace(localStorage["nom"],"");
+$scope.team[0][1].value = $scope.team[0][1].value.replace(localStorage["nom"],"") + "(" + $scope.team[0][1].value.trim().split(/\s+/).length + ")";
 
-$scope.team[3][0].value = $scope.team[3][0].value.replace(localStorage["nom"],"");
-$scope.team[3][1].value = $scope.team[3][1].value.replace(localStorage["nom"],"");
+$scope.team[1][0].value = $scope.team[1][0].value.replace(localStorage["nom"],"")+ "(" + $scope.team[1][0].value.trim().split(/\s+/).length + ")";
+$scope.team[1][1].value = $scope.team[1][1].value.replace(localStorage["nom"],"")+ "(" + $scope.team[1][1].value.trim().split(/\s+/).length + ")";
 
-$scope.team[4][0].value = $scope.team[4][0].value.replace(localStorage["nom"],"");
-$scope.team[4][1].value = $scope.team[4][1].value.replace(localStorage["nom"],"");
+$scope.team[2][0].value = $scope.team[2][0].value.replace(localStorage["nom"],"")+ "(" + $scope.team[2][0].value.trim().split(/\s+/).length + ")";
+$scope.team[2][1].value = $scope.team[2][1].value.replace(localStorage["nom"],"")+ "(" + $scope.team[2][1].value.trim().split(/\s+/).length + ")";
+
+$scope.team[3][0].value = $scope.team[3][0].value.replace(localStorage["nom"],"")+ "(" + $scope.team[3][0].value.trim().split(/\s+/).length + ")";
+$scope.team[3][1].value = $scope.team[3][1].value.replace(localStorage["nom"],"")+ "(" + $scope.team[4][1].value.trim().split(/\s+/).length + ")";
+
+$scope.team[4][0].value = $scope.team[4][0].value.replace(localStorage["nom"],"")+ "(" + $scope.team[4][0].value.trim().split(/\s+/).length + ")";
+$scope.team[4][1].value = $scope.team[4][1].value.replace(localStorage["nom"],"")+ "(" + $scope.team[4][1].value.trim().split(/\s+/).length + ")";
 
 $scope.week[0].team = $scope.team[0]
 $scope.week[1].team = $scope.team[1]
@@ -414,7 +452,11 @@ $scope.team = [[{value: ""},{value: ""}],[{value: ""},{value: ""}],[{value: ""},
   localStorage["week"] = JSON.stringify($scope.week);
   localStorage["nom"] = $scope.person_name;
   localStorage["nomIndex"] =   $scope.person_id;
-  _satellite.track("Calendar_Save");
+
+  if(data.value) {datalayer.action = "add time";} else {datalayer.action = "remove time";}
+  datalayer.changeday =  JSON.stringify(day).replace(/\"/g,"");
+  datalayer.partday =  JSON.stringify(data.hour).replace(/\"/g,"");
+  _satellite.track("action");
    myAjax();
 
   
@@ -476,9 +518,19 @@ $scope.team = [[{value: ""},{value: ""}],[{value: ""},{value: ""}],[{value: ""},
 <script>
 
 
+if(localStorage["nom"] && localStorage["firstname"] && localStorage["nom"]!=localStorage["firstname"]){
 
+$("#var1").val(localStorage["nomIndex"]);
+console.log(localStorage["firstname"] + " vs " + localStorage["nom"]);
+$("#form").submit();
+
+}
 
 function SaveACS() {
+datalayer.pageName = "Calendra:Save ACS";
+datalayer.action = "Save ACS";
+datalayer.statusAC = "unknown";
+_satellite.track("action");
 $("#var1").val(localStorage["nomIndex"]);
 $("#var2").val("save");
 $("#form").submit();
@@ -486,12 +538,13 @@ $("#form").submit();
 };
 
 
+
+
 </script>
 
 
+
 <script type="text/javascript">_satellite.pageBottom();</script>
-<a href=https://acs106.msavlab.adobe.com/lp/LP2>&nbsp;New User ?</a> //
-<a href="view.php">&nbsp;Presence Dashboard</a>
 </body>
 </html>
 

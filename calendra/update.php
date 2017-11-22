@@ -28,12 +28,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-
+$nowtime = date('Y-m-d G:i:s');
 //$val = "<script>localStorage.getItem('week');</script>"; 
 
 
 
-$sql="UPDATE profile set Comments = '".$local	."' where id =" .$id;
+$sql="UPDATE profile set lastupd='".$nowtime	."',Comments = '".$local	."' where id =" .$id;
 
 
 $result = $conn->query($sql);
@@ -45,6 +45,7 @@ if ($result) {
 echo "&#10003; Save in SQL";
       
 } else {
+	echo $sql;
     echo "0 results";
 }
 

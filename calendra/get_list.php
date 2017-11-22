@@ -27,7 +27,7 @@ if ($conn->connect_error) {
 
 
 
-$sql = "SELECT id, firstname, lastname,MoAM,MoPM,Comments,email FROM profile order by id";
+$sql = "SELECT id, firstname, Comments FROM profile order by id";
 $result = $conn->query($sql);
 $count = 0;
 
@@ -43,30 +43,43 @@ if ($result->num_rows > 0) {
                 
     $tab = json_decode($row["Comments"]);;
 
-	$_SESSION['MoAM']= $_SESSION['MoAM']." ".$tab[0]->hours[0]->value;
-	$_SESSION['MoPM']= $_SESSION['MoPM']." ".$tab[0]->hours[1]->value;
+    
+
+	if($_SESSION['email']!=$row["email"]){
+
+	$_SESSION['MoAMAll']= $_SESSION['MoAMAll']." ".$tab[0]->hours[0]->value;
+	$_SESSION['MoPMAll']= $_SESSION['MoPMAll']." ".$tab[0]->hours[1]->value;
 	
-	$_SESSION['TuAM']= $_SESSION['TuAM']." ".$tab[1]->hours[0]->value;
-	$_SESSION['TuPM']= $_SESSION['TuPM']." ".$tab[1]->hours[1]->value;
+	$_SESSION['TuAMAll']= $_SESSION['TuAMAll']." ".$tab[1]->hours[0]->value;
+	$_SESSION['TuPMAll']= $_SESSION['TuPMAll']." ".$tab[1]->hours[1]->value;
 	
-	$_SESSION['WeAM']= $_SESSION['WeAM']." ".$tab[2]->hours[0]->value;
-	$_SESSION['WePM']= $_SESSION['WePM']." ".$tab[2]->hours[1]->value;
+	$_SESSION['WeAMAll']= $_SESSION['WeAMAll']." ".$tab[2]->hours[0]->value;
+	$_SESSION['WePMAll']= $_SESSION['WePMAll']." ".$tab[2]->hours[1]->value;
 	
-	$_SESSION['ThAM']= $_SESSION['ThAM']." ".$tab[3]->hours[0]->value;
-	$_SESSION['ThPM']= $_SESSION['ThPM']." ".$tab[3]->hours[1]->value;
+	$_SESSION['ThAMAll']= $_SESSION['ThAMAll']." ".$tab[3]->hours[0]->value;
+	$_SESSION['ThPMAll']= $_SESSION['ThPMAll']." ".$tab[3]->hours[1]->value;
 	
-	$_SESSION['FrAM']= $_SESSION['FrAM']." ".$tab[4]->hours[0]->value;
-	$_SESSION['FrPM']= $_SESSION['FrPM']." ".$tab[4]->hours[1]->value;
-	
+	$_SESSION['FrAMAll']= $_SESSION['FrAMAll']." ".$tab[4]->hours[0]->value;
+	$_SESSION['FrPMAll']= $_SESSION['FrPMAll']." ".$tab[4]->hours[1]->value;
+	}
+
 
     }
 
 	$Comments = $_SESSION['MoAM'];
 	
 	    echo '<script type="text/javascript">',	
-     'localStorage["week2"] = "'.$_SESSION['MoAM'].'"',
+     'localStorage["email"] = "'.$_SESSION['email'].'"',
      '</script>';
      
+   
+     
+     
+	    echo '<script type="text/javascript">',	
+     'localStorage["team"] = JSON.stringify([[{value: "'.$_SESSION['MoAMAll'].'"},{value: "'.$_SESSION['MoPMAll'].'"}],[{value: "'.$_SESSION['TuAMAll'].'"},{value: "'.$_SESSION['TuPMAll'].'"}],[{value: "'.$_SESSION['WeAMAll'].'"},{value: "'.$_SESSION['WePMAll'].'"}],[{value: "'.$_SESSION['ThAMAll'].'"},{value: "'.$_SESSION['ThPMAll'].'"}],[{value: "'.$_SESSION['FrAMAll'].'"},{value: "'.$_SESSION['FrPMAll'].'"}]])',
+     '</script>';
+     
+
 	
     echo '<script type="text/javascript">',	
      'localStorage["persons"] = JSON.stringify(' . $persons .'])',

@@ -17,7 +17,10 @@ $username = "benjagol";
 $password = "Montpel#2015";
 $dbname = "calendra";
 
-$id = $_GET	['id'];
+//$id = $_POST ['id'];
+
+
+
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -28,7 +31,7 @@ if ($conn->connect_error) {
 
 
 
-$sql = "SELECT id, firstname, lastname,MoAM,MoPM,Comments,email FROM profile where id=\"" .$id."\"";
+$sql = "SELECT firstname,Comments,email,Team FROM profile where id=\"" .$id."\"";
 $result = $conn->query($sql);
 
 
@@ -45,10 +48,11 @@ if ($result->num_rows > 0) {
      '</script>';
      
      $email = $row["email"];
+     $group = $row["Team"];
 	$tab = json_decode($Comments);;
 
 	$_SESSION['MoAM']= $tab[0]->hours[0]->value;
-	if($tab[0]->hours[0]->value == ""){$_SESSION['MoAM']="empty";}
+
 	$_SESSION['MoPM']= $tab[0]->hours[1]->value;
 	
 	$_SESSION['TuAM']= $tab[1]->hours[0]->value;
@@ -67,6 +71,16 @@ if ($result->num_rows > 0) {
 	
 	$_SESSION['email'] = $email;
 	$_SESSION['comments'] = $Comments;
+	
+	  
+	    echo '<script type="text/javascript">',	
+     'localStorage["firstname"] = "'.$row['firstname'].'"',
+     '</script>';
+     
+     echo '<script type="text/javascript">',	
+     'localStorage["group"] = "'.$row['Team'].'"',
+     '</script>';
+     
 
 }
 	

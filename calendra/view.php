@@ -1,14 +1,14 @@
 <?php
 
-//session_start();
-
 ?>
 
 
+<?php 
 
-<?php require "connect.php" ?>
+if(!$id){$id = $_POST ['var1'];}
+require "connect.php" 
+?>
 <?php require "get_list.php" ?>
-
 
 <!DOCTYPE html><html><head><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
 <meta name="viewport" content="initial-scale=1">
@@ -22,11 +22,12 @@
 
 <style>
 
+
 table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-    height: 80%;
+
+    border-spacing: 30;
+    width: 90%;
+    height: 70%;
     border: 1px solid #ddd; 
 }
 
@@ -36,14 +37,25 @@ th, td {
     padding: 8px;
 }
 
+table.tdtable td:hover {
+background-color: grey;
+}
 
+td.top {
+    vertical-align: top;
+    border: 1px solid red;
+}
+td.bottom {
+    vertical-align: bottom;
+    border: 1px solid green;
+}
 
-tr:nth-child(even){background-color: #f2f2f2}
 h1 { color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 32px; font-weight: 700; line-height: 64px; margin: 0 0 0; padding: 20px 30px; text-align: center; text-transform: uppercase; }
 
 
 h2 { color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 48px; font-weight: 700; line-height: 48px; margin: 0 0 24px; padding: 0 30px; text-align: center; text-transform: uppercase; }
 
+h4 { color: navy; font-family: 'Open Sans Condensed', sans-serif;  font-size: 20px; }
 
 p { color: #111; font-family: 'Open Sans', sans-serif; font-size: 16px; line-height: 28px; margin: 0 0 48px; }
 
@@ -51,7 +63,7 @@ p { color: #111; font-family: 'Open Sans', sans-serif; font-size: 16px; line-hei
 a { color: #990000; text-decoration: none; }
 
 
-a:hover { text-decoration: underline }
+
 
 
 .date { color: #111; display: block; font-family: 'Open Sans', sans-serif; font-size: 16px; position: relative; text-align: center; z-index: 1; }
@@ -83,11 +95,57 @@ a:hover { text-decoration: underline }
 
 <title>Calendra Adobe</title>
 
+
 <script>
-var datalayer = { "pageName":"MSA:calendar:view"};
+var datalayer = { "pageName":"MSA:calendar:edit"};
 if(!localStorage["nom"]){ localStorage["nom"] = "Jean-Marie";}
 if(!localStorage["nomIndex"]){ localStorage["nomIndex"] = "0";}
 
+function myAjax() {
+vv = JSON.parse(localStorage["week"]);
+
+for(var i = 0; i < vv.length; i++){vv[i].team="";}
+console.log(vv);
+var week =  'update.php?local=' + JSON.stringify(vv) + '&id=' + localStorage["nomIndex"];
+$.ajax( { type : 'POST',
+          data : { },
+          url  : week,              
+          success: function ( data ) {
+            console.log(data);
+          },
+          error: function ( xhr ) {
+            console.log( "error" );
+          }
+        });
+}
+
+
+function ChangeDD(value_person,value_name) {
+_satellite.track("Save");
+
+
+vv = value_person;
+$("#var1").val(vv);
+$("#form").submit();
+
+localStorage["week"] = "";
+localStorage["nom"] = value_name;
+localStorage["nomIndex"] = value_person;
+  
+//window.location.search = 'id=' + value_person;
+
+
+}
+
+
+function Save() {
+  console.log("DC:Save"); console.log($scope.week)
+  localStorage["week"] = JSON.stringify($scope.week);
+  localStorage["nom"] = $scope.person_name.split('"')[0];
+  localStorage["nomIndex"] =   $scope.person_id;
+
+ 
+};
 
 
 
@@ -97,23 +155,38 @@ if(!localStorage["nomIndex"]){ localStorage["nomIndex"] = "0";}
 <script src="https://assets.adobedtm.com/ed015bf1f294ad47b32bded889ba32e62ca6c25a/satelliteLib-624f054d82f9aea1b470f130cecba9dd1d037b23.js"></script>
   
 </head>
-<h1>Consulting presence</h1>
+
 <body ng-app="myApp" class="ng-scope">
+
+<form style="display: hidden" action="http://benjaminachiary.com/calendra/view.php" method="POST" id="form">
+  <input type="hidden" id="var1" name="var1" value=""/>
+  <input type="hidden" id="var2" name="var2" value=""/>
+</form>
+
+
+
 
 <div class="container-fluid" ng-controller="MyCtrl">
   <div class="row">
     <div class="col-md-12">
       
+<label>Nom:</label>
+<select name="person" ng-options="person.name as person.name for person in persons" ng-model="person_name" onChange="ChangeDD(this.value,options[this.value].text)">
 
 
 </select>
-      <table class="table table-bordered table-hover table-condensed">
+
+
+      <h4>
+ 
+  </h4>
+      <table class="table table-bordered tdtable table-condensed">
         <thead>
          
-            <th ng-click="">
+            <th ng-click="addALLCreneau()">
              
             </th>
-            <th ng-repeat="d in week" ng-click="">
+            <th ng-repeat="d in week" ng-click="addDay(d.day)">
               {{d.day}}
             </th>
           </tr>
@@ -123,10 +196,10 @@ if(!localStorage["nomIndex"]){ localStorage["nomIndex"] = "0";}
             <td>
 
             </td>
-            <td ng-repeat="d in week" ng-click="">
-              <b><h2><br><br>{{ d.hours[$parent.$index].value }}</h2></b></b><br><br><br>
-              
-               <i>{{d.team[$parent.$index].value}}<i>
+            <td class="" ng-repeat="d in week" ng-click="addHere(d.hours[$parent.$index],d.day)">
+		<i>{{d.team[$parent.$index].value}}</i>
+       <h4 font-color=blue>{{ d.hours[$parent.$index].value }}</h4>
+
             </td>
           </tr>
         </tbody>
@@ -147,6 +220,11 @@ if(!localStorage["nomIndex"]){ localStorage["nomIndex"] = "0";}
 
 <script type="text/javascript">//<![CDATA[
 
+if(localStorage["nom"]!=localStorage["firstname"]){
+
+
+}
+
 var myApp = angular.module('myApp', []);
 
 function MyCtrl($scope) {
@@ -166,6 +244,7 @@ if(localStorage["week"]){
 $scope.team = JSON.parse(localStorage["team"])
 $scope.week = JSON.parse(localStorage["week"]);
 var t1 = $scope.team[0][0].value.replace(localStorage["nom"],"");
+
 
 $scope.week[0].team = $scope.team[0]
 $scope.week[1].team = $scope.team[1]
@@ -305,19 +384,20 @@ $scope.team = [[{value: ""},{value: ""}],[{value: ""},{value: ""}],[{value: ""},
 
 
 
-  $scope.addHere = function(data) {
+  $scope.addHere = function(data,day) {
 
     data.value = $scope.addPersonToCreneau(data.value);
-    $scope.Save()
+    $scope.Save(data,day)
   };
   
-    $scope.Save = function() {
-  console.log("DC:Save"); console.log($scope.week)
+    $scope.Save = function(data,day) {
+  console.log("DC:Save:" + $scope.person_name + ":" + JSON.stringify(day)+ ":" + JSON.stringify(data.hour)); console.log($scope.week)
   localStorage["week"] = JSON.stringify($scope.week);
   localStorage["nom"] = $scope.person_name;
   localStorage["nomIndex"] =   $scope.person_id;
-   myAjax();
   _satellite.track("Calendar_Save");
+   myAjax();
+
   
  
   };
@@ -329,7 +409,7 @@ $scope.team = [[{value: ""},{value: ""}],[{value: ""},{value: ""}],[{value: ""},
   
   
    MyCtrl($scope)
-   $scope.Save()
+   $scope.Save(data)
 
   };
   
@@ -338,7 +418,7 @@ $scope.team = [[{value: ""},{value: ""}],[{value: ""},{value: ""}],[{value: ""},
     $scope.addDay = function(data) {
   
     $scope.addDayCreneau(data);
-    $scope.Save()
+    $scope.Save(data)
   };
   
      $scope.addhours = function(data) {
@@ -374,11 +454,19 @@ $scope.team = [[{value: ""},{value: ""}],[{value: ""},{value: ""}],[{value: ""},
   
 
 </script>
+<script>
 
+
+
+
+
+
+</script>
 
 
 <script type="text/javascript">_satellite.pageBottom();</script>
 
 </body>
 </html>
+
 
