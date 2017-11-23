@@ -10,13 +10,6 @@
 
 
 
-
-
-$servername = "localhost";
-$username = "benjagol";
-$password = "Montpel#2015";
-$dbname = "calendra";
-
 //$id = $_POST ['id'];
 
 

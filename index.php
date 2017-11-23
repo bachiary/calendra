@@ -11,6 +11,7 @@
 
 <?php 
 
+require "./config.php"
 if(!$id){$id = $_POST ['var1'];}
 require "connect.php" 
 ?>
